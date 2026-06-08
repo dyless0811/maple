@@ -23,14 +23,43 @@
     "id": "yeti",   "name": "예티",     "size": "large",
     "hp": 500, "armor": 4, "shield": 150, "shieldArmor": 2, "hpRegen": 5
   },
+
   {
-    "id": "boss_clocktower", "name": "시계탑의 근원", "size": "small", "boss": true,
-    "hp": 8000, "armor": 5, "shield": 0, "shieldArmor": 0, "hpRegen": 60,
-    "note": "58라운드 보스(소형). 소형 딜이 약하면 체젠을 못 넘김."
+    "id": "boss_r24", "name": "24R 보스 (소형)", "size": "small", "boss": true,
+    "hp": 4000,  "armor": 4, "shield": 0,    "shieldArmor": 0, "hpRegen": 20
   },
   {
-    "id": "boss_pinkbean", "name": "핑크빈", "size": "medium", "boss": true,
-    "hp": 20000, "armor": 6, "shield": 5000, "shieldArmor": 3, "hpRegen": 80,
-    "note": "95라운드 보스(중형). 쉴드가 두꺼움."
+    "id": "boss_r30", "name": "30R 보스 (소형)", "size": "small", "boss": true,
+    "hp": 6500,  "armor": 5, "shield": 0,    "shieldArmor": 0, "hpRegen": 30
+  },
+  {
+    "id": "boss_r37", "name": "37R 보스 (중형)", "size": "medium", "boss": true,
+    "hp": 9500,  "armor": 5, "shield": 0,    "shieldArmor": 0, "hpRegen": 35
+  },
+  {
+    "id": "boss_r45", "name": "45R 보스 (대형)", "size": "large", "boss": true,
+    "hp": 15000, "armor": 6, "shield": 0,    "shieldArmor": 0, "hpRegen": 40
+  },
+  {
+    "id": "boss_r58", "name": "시계탑의 근원 (소형)", "size": "small", "boss": true,
+    "hp": 22000, "armor": 6, "shield": 0,    "shieldArmor": 0, "hpRegen": 70,
+    "note": "58R 보스(소형). 소형 딜(고스트)이 약하면 체젠을 못 넘김."
+  },
+  {
+    "id": "boss_r66", "name": "66R 보스 (대형)", "size": "large", "boss": true,
+    "hp": 35000, "armor": 7, "shield": 8000, "shieldArmor": 3, "hpRegen": 60
+  },
+  {
+    "id": "boss_r79", "name": "79R 보스 (중형)", "size": "medium", "boss": true,
+    "hp": 50000, "armor": 7, "shield": 0,    "shieldArmor": 0, "hpRegen": 80
+  },
+  {
+    "id": "boss_r90", "name": "90R 보스 (대형)", "size": "large", "boss": true,
+    "hp": 75000, "armor": 8, "shield": 15000, "shieldArmor": 4, "hpRegen": 100
+  },
+  {
+    "id": "boss_r101", "name": "101R 최종 보스 (중형)", "size": "medium", "boss": true,
+    "hp": 120000, "armor": 8, "shield": 0,   "shieldArmor": 0, "hpRegen": 140,
+    "note": "101R 최종 보스(중형). 클리어 목표."
   }
 ]

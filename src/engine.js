@@ -241,6 +241,9 @@
         const sizeNames = result.enemyTable.map((e) => (meta.sizes || []).find((s) => s.id === e.size)?.name || e.size);
         result.tips.push(`이번 스테이지(${stage.name})에는 "${best.name}"이(가) 가장 효율적입니다. 등장: ${[...new Set(sizeNames)].join('/')}.`);
       }
+      if (stage.boss) {
+        result.tips.push('보스 라운드입니다. 보스 크기에 맞춰 소형→고스트, 중형→히드라, 대형→드라군이 유리합니다. "처치불가(체젠 벽)"가 뜨면 해당 유닛 보유 수와 공격력 업그레이드를 더 올리세요.');
+      }
       if (result.upgradeSuggestions.length > 0) {
         const u = result.upgradeSuggestions[0];
         result.tips.push(`업그레이드는 "${u.name}"(Lv.${u.currentLevel}→${u.currentLevel + 1}, 비용 ${u.nextCost})가 지금 가장 효율적입니다.`);

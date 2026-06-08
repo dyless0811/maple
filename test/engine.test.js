@@ -127,4 +127,20 @@ test('특정 등급 1개를 위한 기대 뽑기/미네랄', () => {
   assert.strictEqual(Math.round(r.minerals), 1250); // 125 × 10
 });
 
+test('보스 라운드 구성과 크기가 7.2 스펙과 일치한다', () => {
+  const expected = {
+    24: 'small', 30: 'small', 37: 'medium', 45: 'large', 58: 'small',
+    66: 'large', 79: 'medium', 90: 'large', 101: 'medium'
+  };
+  for (const [round, size] of Object.entries(expected)) {
+    const st = DATA.stages.find((s) => s.stage === Number(round));
+    assert.ok(st && st.boss, `${round}R 보스 라운드가 있어야 함`);
+    const enemy = E(st.spawns[0].enemy);
+    assert.strictEqual(enemy.size, size, `${round}R 보스 크기`);
+  }
+  // 101R이 최종(가장 높은 라운드)
+  const maxRound = Math.max(...DATA.stages.map((s) => s.stage));
+  assert.strictEqual(maxRound, 101);
+});
+
 console.log(`\n${passed}개 테스트 통과 ✅`);

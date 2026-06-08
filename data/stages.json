@@ -1,12 +1,19 @@
 [
-  { "stage": 1,  "name": "1R - 달팽이",        "boss": false, "spawns": [ { "enemy": "snail", "count": 12 } ] },
-  { "stage": 2,  "name": "2R - 주황버섯",      "boss": false, "spawns": [ { "enemy": "mushroom", "count": 14 } ] },
-  { "stage": 3,  "name": "3R - 리본돼지",      "boss": false, "spawns": [ { "enemy": "pig", "count": 10 } ] },
-  { "stage": 4,  "name": "4R - 혼성(소+중)",   "boss": false, "spawns": [ { "enemy": "mushroom", "count": 8 }, { "enemy": "pig", "count": 6 } ] },
-  { "stage": 5,  "name": "5R - 돌 골렘(쉴드)", "boss": false, "spawns": [ { "enemy": "stone_golem", "count": 8 } ] },
-  { "stage": 6,  "name": "6R - 와일드보어",    "boss": false, "spawns": [ { "enemy": "boar", "count": 8 } ] },
-  { "stage": 7,  "name": "7R - 예티",          "boss": false, "spawns": [ { "enemy": "yeti", "count": 6 } ] },
-  { "stage": 8,  "name": "8R - 혼성(중+대)",   "boss": false, "spawns": [ { "enemy": "pig", "count": 8 }, { "enemy": "boar", "count": 6 } ] },
-  { "stage": 58, "name": "58R - 보스: 시계탑의 근원", "boss": true, "spawns": [ { "enemy": "boss_clocktower", "count": 1 } ] },
-  { "stage": 95, "name": "95R - 보스: 핑크빈", "boss": true, "spawns": [ { "enemy": "boss_pinkbean", "count": 1 } ] }
+  { "stage": 1,   "name": "1R - 달팽이",        "boss": false, "spawns": [ { "enemy": "snail", "count": 12 } ] },
+  { "stage": 2,   "name": "2R - 주황버섯",      "boss": false, "spawns": [ { "enemy": "mushroom", "count": 14 } ] },
+  { "stage": 3,   "name": "3R - 리본돼지",      "boss": false, "spawns": [ { "enemy": "pig", "count": 10 } ] },
+  { "stage": 4,   "name": "4R - 혼성(소+중)",   "boss": false, "spawns": [ { "enemy": "mushroom", "count": 8 }, { "enemy": "pig", "count": 6 } ] },
+  { "stage": 5,   "name": "5R - 돌 골렘(쉴드)", "boss": false, "spawns": [ { "enemy": "stone_golem", "count": 8 } ] },
+  { "stage": 6,   "name": "6R - 와일드보어",    "boss": false, "spawns": [ { "enemy": "boar", "count": 8 } ] },
+  { "stage": 7,   "name": "7R - 예티",          "boss": false, "spawns": [ { "enemy": "yeti", "count": 6 } ] },
+
+  { "stage": 24,  "name": "24R - 소형 보스",    "boss": true, "spawns": [ { "enemy": "boss_r24", "count": 1 } ] },
+  { "stage": 30,  "name": "30R - 소형 보스",    "boss": true, "spawns": [ { "enemy": "boss_r30", "count": 1 } ] },
+  { "stage": 37,  "name": "37R - 중형 보스",    "boss": true, "spawns": [ { "enemy": "boss_r37", "count": 1 } ] },
+  { "stage": 45,  "name": "45R - 대형 보스",    "boss": true, "spawns": [ { "enemy": "boss_r45", "count": 1 } ] },
+  { "stage": 58,  "name": "58R - 시계탑의 근원(소형)", "boss": true, "spawns": [ { "enemy": "boss_r58", "count": 1 } ] },
+  { "stage": 66,  "name": "66R - 대형 보스",    "boss": true, "spawns": [ { "enemy": "boss_r66", "count": 1 } ] },
+  { "stage": 79,  "name": "79R - 중형 보스",    "boss": true, "spawns": [ { "enemy": "boss_r79", "count": 1 } ] },
+  { "stage": 90,  "name": "90R - 대형 보스",    "boss": true, "spawns": [ { "enemy": "boss_r90", "count": 1 } ] },
+  { "stage": 101, "name": "101R - 최종 보스(중형)", "boss": true, "spawns": [ { "enemy": "boss_r101", "count": 1 } ] }
 ]
