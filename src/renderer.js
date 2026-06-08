@@ -1,9 +1,13 @@
 'use strict';
 
 let DATA = { units: [], upgrades: [], enemies: [], stages: [], meta: {} };
-let state = { counts: {}, upgradeLevels: {}, currentStage: 1 };
+let state = { counts: {}, upgradeLevels: {}, currentStage: 1, clearCounts: {} };
 
 const $ = (sel) => document.querySelector(sel);
+
+function gradeName(id) {
+  return (DATA.meta.grades || []).find((g) => g.id === id)?.name || id;
+}
 
 function sizeName(id) {
   return (DATA.meta.sizes || []).find((s) => s.id === id)?.name || id;
@@ -27,6 +31,11 @@ function setUpgrade(id, delta) {
   if (!up) return;
   state.upgradeLevels[id] = Math.min(up.maxLevel, Math.max(0, (state.upgradeLevels[id] || 0) + delta));
   render();
+  persist();
+}
+function setClear(id, delta) {
+  state.clearCounts[id] = Math.max(0, (state.clearCounts[id] || 0) + delta);
+  renderClearSpec();
   persist();
 }
 function setStage(num) {
@@ -135,8 +144,45 @@ function renderGacha() {
   $('#gachaTable').innerHTML = html;
 }
 
+function renderClearSpec() {
+  const spec = DATA.meta.clearSpec;
+  const host = $('#clearSpec');
+  if (!spec) { host.innerHTML = ''; return; }
+  const r = MapleEngine.clearScore(spec, state.clearCounts);
+  const pct = Math.min(100, Math.round(r.ratio * 100));
+  const rows = spec.units.map((u) => {
+    const n = state.clearCounts[u.id] || 0;
+    return `<div class="cs-row">
+      <span class="cs-name" style="color:${u.color}">${u.name}</span>
+      <span class="sub">×${u.weight}전설</span>
+      <span class="counter cs-counter">
+        <button data-act="cleardec" data-id="${u.id}">−</button>
+        <span class="count">${n}</span>
+        <button data-act="clearinc" data-id="${u.id}">+</button>
+      </span>
+    </div>`;
+  }).join('');
+  host.innerHTML = `
+    ${rows}
+    <div class="cs-total ${r.ok ? 'ok' : ''}">
+      <div class="cs-bar"><span style="width:${pct}%"></span></div>
+      <div>전설 환산 <b>${r.total}</b> / 목표 ${r.target}기 — ${r.ok ? '<span class="ok-text">✅ 클각!</span>' : `<span class="sub">${(r.target - r.total).toFixed(2)}기 부족</span>`}</div>
+    </div>`;
+}
+
+function rewardText(reward) {
+  if (!reward) return '';
+  if (reward.clear) return '🏆 클리어';
+  const parts = [];
+  if (reward.ticket) parts.push(`[${gradeName(reward.ticket)}]선택권${reward.ticketCount > 1 ? '×' + reward.ticketCount : ''}`);
+  if (reward.minerals) parts.push(`${reward.minerals}미네랄`);
+  return parts.join(' · ');
+}
+
 function renderEnemyTable(rec) {
-  $('#stageTitle').textContent = rec.stage ? rec.stage.name : '스테이지';
+  const rwd = rec.stage && rec.stage.reward ? rewardText(rec.stage.reward) : '';
+  $('#stageTitle').innerHTML = (rec.stage ? rec.stage.name : '스테이지') +
+    (rwd ? ` <span class="reward-tag">보상: ${rwd}</span>` : '');
   const el = $('#enemyTable');
   if (!rec.enemyTable.length) { el.innerHTML = '<div class="empty">적 정보가 없습니다.</div>'; return; }
 
@@ -204,6 +250,7 @@ function render() {
   renderUpgrades();
   renderModTable();
   renderGacha();
+  renderClearSpec();
   renderEnemyTable(rec);
   renderRecPanel(rec);
 }
@@ -218,6 +265,8 @@ function wireEvents() {
     else if (btn.dataset.act === 'dec') setCount(id, -1);
     else if (btn.dataset.act === 'upinc') setUpgrade(id, +1);
     else if (btn.dataset.act === 'updec') setUpgrade(id, -1);
+    else if (btn.dataset.act === 'clearinc') setClear(id, +1);
+    else if (btn.dataset.act === 'cleardec') setClear(id, -1);
   });
   $('#stageSelect').addEventListener('change', (e) => setStage(Number(e.target.value)));
   $('#gachaPulls').addEventListener('input', renderGacha);
@@ -225,7 +274,7 @@ function wireEvents() {
   $('#stageNext').addEventListener('click', () => setStage(state.currentStage + 1));
   $('#resetBtn').addEventListener('click', () => {
     if (!confirm('카운트와 업그레이드를 초기화할까요?')) return;
-    state = { counts: {}, upgradeLevels: {}, currentStage: DATA.stages[0]?.stage ?? 1 };
+    state = { counts: {}, upgradeLevels: {}, currentStage: DATA.stages[0]?.stage ?? 1, clearCounts: {} };
     render();
     persist();
   });
@@ -235,7 +284,7 @@ async function init() {
   DATA = await window.maple.loadData();
   const saved = await window.maple.loadState();
   if (saved && saved.counts) {
-    state = Object.assign({ counts: {}, upgradeLevels: {}, currentStage: DATA.stages[0]?.stage ?? 1 }, saved);
+    state = Object.assign({ counts: {}, upgradeLevels: {}, currentStage: DATA.stages[0]?.stage ?? 1, clearCounts: {} }, saved);
   } else {
     state.currentStage = DATA.stages[0]?.stage ?? 1;
   }

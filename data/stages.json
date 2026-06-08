@@ -7,13 +7,19 @@
   { "stage": 6,   "name": "6R - 와일드보어",    "boss": false, "spawns": [ { "enemy": "boar", "count": 8 } ] },
   { "stage": 7,   "name": "7R - 예티",          "boss": false, "spawns": [ { "enemy": "yeti", "count": 6 } ] },
 
-  { "stage": 24,  "name": "24R - 소형 보스",    "boss": true, "spawns": [ { "enemy": "boss_r24", "count": 1 } ] },
-  { "stage": 30,  "name": "30R - 소형 보스",    "boss": true, "spawns": [ { "enemy": "boss_r30", "count": 1 } ] },
-  { "stage": 37,  "name": "37R - 중형 보스",    "boss": true, "spawns": [ { "enemy": "boss_r37", "count": 1 } ] },
-  { "stage": 45,  "name": "45R - 대형 보스",    "boss": true, "spawns": [ { "enemy": "boss_r45", "count": 1 } ] },
-  { "stage": 58,  "name": "58R - 시계탑의 근원(소형)", "boss": true, "spawns": [ { "enemy": "boss_r58", "count": 1 } ] },
-  { "stage": 66,  "name": "66R - 대형 보스",    "boss": true, "spawns": [ { "enemy": "boss_r66", "count": 1 } ] },
-  { "stage": 79,  "name": "79R - 중형 보스",    "boss": true, "spawns": [ { "enemy": "boss_r79", "count": 1 } ] },
-  { "stage": 90,  "name": "90R - 대형 보스",    "boss": true, "spawns": [ { "enemy": "boss_r90", "count": 1 } ] },
-  { "stage": 101, "name": "101R - 최종 보스(중형)", "boss": true, "spawns": [ { "enemy": "boss_r101", "count": 1 } ] }
+  { "stage": 24,  "name": "24R - 크림슨발록(소형)",   "boss": true, "reward": { "ticket": "relic",     "ticketCount": 1, "minerals": 50 },  "spawns": [ { "enemy": "boss_r24",  "count": 1 } ] },
+  { "stage": 30,  "name": "30R - 소형 보스",          "boss": true, "reward": null,                                                          "spawns": [ { "enemy": "boss_r30",  "count": 1 } ] },
+  { "stage": 37,  "name": "37R - 피아누스(중형)",     "boss": true, "reward": { "ticket": "epic_saga", "ticketCount": 1, "minerals": 50 },  "spawns": [ { "enemy": "boss_r37",  "count": 1 } ] },
+  { "stage": 45,  "name": "45R - 대형 보스",          "boss": true, "reward": null,                                                          "spawns": [ { "enemy": "boss_r45",  "count": 1 } ] },
+  { "stage": 58,  "name": "58R - 파풀라투스(소형)",   "boss": true, "reward": { "ticket": "epic_saga", "ticketCount": 1, "minerals": 70 },  "spawns": [ { "enemy": "boss_r58",  "count": 1 } ] },
+  { "stage": 66,  "name": "66R - 대형 보스",          "boss": true, "reward": null,                                                          "spawns": [ { "enemy": "boss_r66",  "count": 1 } ] },
+  { "stage": 79,  "name": "79R - 자쿰(중형)",         "boss": true, "reward": { "ticket": "legendary", "ticketCount": 1, "minerals": 50 },  "spawns": [ { "enemy": "boss_r79",  "count": 1 } ] },
+  { "stage": 90,  "name": "90R - 혼테일(대형)",       "boss": true, "reward": { "ticket": "legendary", "ticketCount": 1, "minerals": 100 }, "spawns": [ { "enemy": "boss_r90",  "count": 1 } ] },
+  { "stage": 95,  "name": "95R - 핑크빈(중형)",       "boss": true, "reward": { "ticket": "legendary", "ticketCount": 1, "minerals": 150 }, "spawns": [ { "enemy": "boss_r95",  "count": 1 } ] },
+  { "stage": 96,  "name": "96R - 타락한 시간의 신관(소형)",   "boss": true, "reward": { "ticket": "relic",     "ticketCount": 1, "minerals": 100 }, "spawns": [ { "enemy": "boss_r96",  "count": 1 } ] },
+  { "stage": 97,  "name": "97R - 타락한 시간의 수호대장(대형)", "boss": true, "reward": { "ticket": "relic",     "ticketCount": 2, "minerals": 100 }, "spawns": [ { "enemy": "boss_r97",  "count": 1 } ] },
+  { "stage": 98,  "name": "98R - 변형된 슬라임(중형)", "boss": true, "reward": { "ticket": "epic_saga", "ticketCount": 1, "minerals": 100 }, "spawns": [ { "enemy": "boss_r98",  "count": 1 } ] },
+  { "stage": 99,  "name": "99R - 에이션트 다크골렘(대형)", "boss": true, "reward": { "ticket": "epic_saga", "ticketCount": 2, "minerals": 100 }, "spawns": [ { "enemy": "boss_r99",  "count": 1 } ] },
+  { "stage": 100, "name": "100R - 정식기사A(소형)",   "boss": true, "reward": { "ticket": "legendary", "ticketCount": 1, "minerals": 100 }, "spawns": [ { "enemy": "boss_r100", "count": 1 } ] },
+  { "stage": 101, "name": "101R - 시그너스(중형/최종)", "boss": true, "reward": { "clear": true },                                            "spawns": [ { "enemy": "boss_r101", "count": 1 } ] }
 ]

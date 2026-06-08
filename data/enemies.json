@@ -24,42 +24,19 @@
     "hp": 500, "armor": 4, "shield": 150, "shieldArmor": 2, "hpRegen": 5
   },
 
-  {
-    "id": "boss_r24", "name": "24R 보스 (소형)", "size": "small", "boss": true,
-    "hp": 4000,  "armor": 4, "shield": 0,    "shieldArmor": 0, "hpRegen": 20
-  },
-  {
-    "id": "boss_r30", "name": "30R 보스 (소형)", "size": "small", "boss": true,
-    "hp": 6500,  "armor": 5, "shield": 0,    "shieldArmor": 0, "hpRegen": 30
-  },
-  {
-    "id": "boss_r37", "name": "37R 보스 (중형)", "size": "medium", "boss": true,
-    "hp": 9500,  "armor": 5, "shield": 0,    "shieldArmor": 0, "hpRegen": 35
-  },
-  {
-    "id": "boss_r45", "name": "45R 보스 (대형)", "size": "large", "boss": true,
-    "hp": 15000, "armor": 6, "shield": 0,    "shieldArmor": 0, "hpRegen": 40
-  },
-  {
-    "id": "boss_r58", "name": "시계탑의 근원 (소형)", "size": "small", "boss": true,
-    "hp": 22000, "armor": 6, "shield": 0,    "shieldArmor": 0, "hpRegen": 70,
-    "note": "58R 보스(소형). 소형 딜(고스트)이 약하면 체젠을 못 넘김."
-  },
-  {
-    "id": "boss_r66", "name": "66R 보스 (대형)", "size": "large", "boss": true,
-    "hp": 35000, "armor": 7, "shield": 8000, "shieldArmor": 3, "hpRegen": 60
-  },
-  {
-    "id": "boss_r79", "name": "79R 보스 (중형)", "size": "medium", "boss": true,
-    "hp": 50000, "armor": 7, "shield": 0,    "shieldArmor": 0, "hpRegen": 80
-  },
-  {
-    "id": "boss_r90", "name": "90R 보스 (대형)", "size": "large", "boss": true,
-    "hp": 75000, "armor": 8, "shield": 15000, "shieldArmor": 4, "hpRegen": 100
-  },
-  {
-    "id": "boss_r101", "name": "101R 최종 보스 (중형)", "size": "medium", "boss": true,
-    "hp": 120000, "armor": 8, "shield": 0,   "shieldArmor": 0, "hpRegen": 140,
-    "note": "101R 최종 보스(중형). 클리어 목표."
-  }
+  { "id": "boss_r24",  "name": "크림슨발록",            "size": "small",  "boss": true, "hp": 4000,   "armor": 4, "shield": 0,     "shieldArmor": 0, "hpRegen": 25 },
+  { "id": "boss_r30",  "name": "30R 보스",              "size": "small",  "boss": true, "hp": 6500,   "armor": 5, "shield": 0,     "shieldArmor": 0, "hpRegen": 35 },
+  { "id": "boss_r37",  "name": "피아누스",              "size": "medium", "boss": true, "hp": 9500,   "armor": 5, "shield": 0,     "shieldArmor": 0, "hpRegen": 40 },
+  { "id": "boss_r45",  "name": "45R 보스",              "size": "large",  "boss": true, "hp": 15000,  "armor": 6, "shield": 0,     "shieldArmor": 0, "hpRegen": 45 },
+  { "id": "boss_r58",  "name": "파풀라투스",            "size": "small",  "boss": true, "hp": 24000,  "armor": 6, "shield": 0,     "shieldArmor": 0, "hpRegen": 80, "note": "58R 소형. 소형 딜(고스트)이 약하면 체젠 벽." },
+  { "id": "boss_r66",  "name": "66R 보스",              "size": "large",  "boss": true, "hp": 35000,  "armor": 7, "shield": 8000,  "shieldArmor": 3, "hpRegen": 60 },
+  { "id": "boss_r79",  "name": "자쿰",                  "size": "medium", "boss": true, "hp": 52000,  "armor": 7, "shield": 0,     "shieldArmor": 0, "hpRegen": 90 },
+  { "id": "boss_r90",  "name": "혼테일",                "size": "large",  "boss": true, "hp": 78000,  "armor": 8, "shield": 15000, "shieldArmor": 4, "hpRegen": 110 },
+  { "id": "boss_r95",  "name": "핑크빈",                "size": "medium", "boss": true, "hp": 95000,  "armor": 8, "shield": 0,     "shieldArmor": 0, "hpRegen": 120 },
+  { "id": "boss_r96",  "name": "타락한 시간의 신관",    "size": "small",  "boss": true, "hp": 105000, "armor": 8, "shield": 0,     "shieldArmor": 0, "hpRegen": 150, "note": "소형. 강한 소형 딜 필요." },
+  { "id": "boss_r97",  "name": "타락한 시간의 수호대장", "size": "large",  "boss": true, "hp": 130000, "armor": 9, "shield": 20000, "shieldArmor": 4, "hpRegen": 130 },
+  { "id": "boss_r98",  "name": "변형된 슬라임",         "size": "medium", "boss": true, "hp": 150000, "armor": 9, "shield": 0,     "shieldArmor": 0, "hpRegen": 140 },
+  { "id": "boss_r99",  "name": "에이션트 다크골렘",     "size": "large",  "boss": true, "hp": 175000, "armor": 10,"shield": 25000, "shieldArmor": 5, "hpRegen": 150 },
+  { "id": "boss_r100", "name": "정식기사A",             "size": "small",  "boss": true, "hp": 190000, "armor": 9, "shield": 0,     "shieldArmor": 0, "hpRegen": 180, "note": "100R 소형. 고스트가 약해질 수 있어 강한 소형 딜 필요." },
+  { "id": "boss_r101", "name": "시그너스",              "size": "medium", "boss": true, "hp": 240000, "armor": 10,"shield": 0,     "shieldArmor": 0, "hpRegen": 200, "note": "101R 최종 보스(중형). 처치 시 클리어." }
 ]

@@ -129,8 +129,9 @@ test('특정 등급 1개를 위한 기대 뽑기/미네랄', () => {
 
 test('보스 라운드 구성과 크기가 7.2 스펙과 일치한다', () => {
   const expected = {
-    24: 'small', 30: 'small', 37: 'medium', 45: 'large', 58: 'small',
-    66: 'large', 79: 'medium', 90: 'large', 101: 'medium'
+    24: 'small', 30: 'small', 37: 'medium', 45: 'large', 58: 'small', 66: 'large',
+    79: 'medium', 90: 'large', 95: 'medium', 96: 'small', 97: 'large',
+    98: 'medium', 99: 'large', 100: 'small', 101: 'medium'
   };
   for (const [round, size] of Object.entries(expected)) {
     const st = DATA.stages.find((s) => s.stage === Number(round));
@@ -138,9 +139,24 @@ test('보스 라운드 구성과 크기가 7.2 스펙과 일치한다', () => {
     const enemy = E(st.spawns[0].enemy);
     assert.strictEqual(enemy.size, size, `${round}R 보스 크기`);
   }
-  // 101R이 최종(가장 높은 라운드)
+  // 101R이 최종(가장 높은 라운드), 클리어 보상
   const maxRound = Math.max(...DATA.stages.map((s) => s.stage));
   assert.strictEqual(maxRound, 101);
+  assert.ok(DATA.stages.find((s) => s.stage === 101).reward.clear);
+});
+
+test('클리어 스펙(전설 환산) 계산이 맞다', () => {
+  const spec = DATA.meta.clearSpec;
+  // 1태초 2신화 = 4 + 1.5×2 = 7 → 클각
+  const r1 = engine.clearScore(spec, { primordial: 1, mythic: 2 });
+  assert.strictEqual(r1.total, 7);
+  assert.ok(r1.ok);
+  // 2전설 = 2 < 7 → 부족
+  const r2 = engine.clearScore(spec, { legendary: 2 });
+  assert.strictEqual(r2.total, 2);
+  assert.ok(!r2.ok);
+  // 락다 1 = 전설 1
+  assert.strictEqual(engine.clearScore(spec, { rakda: 1 }).total, 1);
 });
 
 console.log(`\n${passed}개 테스트 통과 ✅`);

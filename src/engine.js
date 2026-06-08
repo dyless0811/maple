@@ -119,6 +119,27 @@
     return { pulls, minerals: isFinite(pulls) ? pulls * (pullCost || 0) : Infinity };
   }
 
+  // ── 클리어 스펙(전설 환산) 계산기 ───────────────────────────────────
+  // counts: { 환산유닛id: 개수 }, clearSpec: meta.clearSpec
+  function clearScore(clearSpec, counts) {
+    const units = (clearSpec && clearSpec.units) || [];
+    const target = (clearSpec && clearSpec.targetLegendary) || 0;
+    let total = 0;
+    const breakdown = units.map((u) => {
+      const n = (counts && counts[u.id]) || 0;
+      const sub = n * u.weight;
+      total += sub;
+      return { id: u.id, name: u.name, count: n, weight: u.weight, legendary: sub };
+    });
+    return {
+      total: Math.round(total * 100) / 100,
+      target,
+      ratio: target ? total / target : 0,
+      ok: total >= target,
+      breakdown
+    };
+  }
+
   /**
    * 메인 분석
    * @param {{units,upgrades,enemies,stages,meta}} data
@@ -144,7 +165,7 @@
 
     const result = {
       totalUnits,
-      stage: stage ? { stage: stage.stage, name: stage.name, boss: !!stage.boss } : null,
+      stage: stage ? { stage: stage.stage, name: stage.name, boss: !!stage.boss, reward: stage.reward || null } : null,
       enemyTable: [],
       perUnit: [],
       bestUnitId: null,
@@ -267,7 +288,7 @@
   const api = {
     analyze, perHit, timeToKill, effDpsVsEnemy, unitValueVsStage,
     sizeMod, upgradeBonus, upgradeCost, upgradeCostTo,
-    gachaExpected, atLeastOnce, expectedPullsForOne
+    gachaExpected, atLeastOnce, expectedPullsForOne, clearScore
   };
 
   if (typeof module !== 'undefined' && module.exports) {

@@ -99,6 +99,23 @@ html, body {
 .gacha input:focus { border-color: var(--accent-2); }
 #gachaCost { margin-bottom: 8px; }
 
+/* 클리어 스펙 계산기 */
+.clearspec { display: flex; flex-direction: column; gap: 6px; }
+.cs-row { display: flex; align-items: center; gap: 8px; background: var(--panel-2); border: 1px solid var(--border); border-radius: 8px; padding: 6px 10px; }
+.cs-name { font-weight: 700; min-width: 36px; }
+.cs-counter { margin-left: auto; }
+.cs-counter button { width: 26px; height: 26px; font-size: 15px; }
+.cs-counter .count { min-width: 24px; font-size: 15px; }
+.cs-total { margin-top: 8px; font-size: 13px; }
+.cs-total.ok { color: var(--good); }
+.cs-bar { height: 8px; background: #0e1322; border-radius: 5px; overflow: hidden; margin-bottom: 6px; }
+.cs-bar > span { display: block; height: 100%; background: linear-gradient(90deg, var(--accent-2), var(--accent)); }
+.cs-total.ok .cs-bar > span { background: linear-gradient(90deg, var(--good), #16a34a); }
+.ok-text { color: var(--good); font-weight: 700; }
+
+/* 보상 태그 */
+.reward-tag { font-size: 11px; font-weight: 600; color: var(--accent); background: rgba(245,158,11,0.12); border: 1px solid rgba(245,158,11,0.3); padding: 2px 8px; border-radius: 8px; margin-left: 6px; }
+
 /* 적 테이블 */
 .enemy-table { overflow-x: auto; }
 .etable { width: 100%; border-collapse: collapse; font-size: 12px; }

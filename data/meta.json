@@ -35,5 +35,16 @@
     { "id": "epic",       "name": "에픽", "prob": 0.002,   "color": "#fb7185" },
     { "id": "mythic",     "name": "신화", "prob": 0.0008,  "color": "#f43f5e" },
     { "id": "primordial", "name": "태초", "prob": 0.00019, "color": "#e879f9" }
-  ]
+  ],
+  "clearSpec": {
+    "targetLegendary": 7,
+    "note": "개인적 체감 기준 클각 기물수. 전설 환산 합계가 약 7이면 클리어권. 1신화=1.5전설, 1태초=4전설, 1락다=1전설, 1.5에픽=1전설.",
+    "units": [
+      { "id": "primordial", "name": "태초", "weight": 4,      "color": "#e879f9" },
+      { "id": "mythic",     "name": "신화", "weight": 1.5,    "color": "#f43f5e" },
+      { "id": "legendary",  "name": "전설", "weight": 1,      "color": "#f59e0b" },
+      { "id": "rakda",      "name": "락다", "weight": 1,      "color": "#fbbf24" },
+      { "id": "epic",       "name": "에픽", "weight": 0.6667, "color": "#fb7185" }
+    ]
+  }
 }
