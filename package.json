@@ -1,0 +1,15 @@
+{
+  "name": "maple-random-defense-guide",
+  "version": "0.1.0",
+  "description": "스타크래프트 메이플 랜덤 디펜스 가이드 프로그램 - 유닛 뽑기 카운팅 및 최적 조합/업그레이드 추천",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "test": "node test/engine.test.js"
+  },
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "electron": "^31.0.0"
+  }
+}

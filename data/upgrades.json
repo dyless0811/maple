@@ -1,0 +1,37 @@
+[
+  {
+    "id": "ground_atk", "name": "지상 공격력",
+    "appliesTo": { "attackType": ["ground", "both"] },
+    "maxLevel": 20, "perLevel": 0.08,
+    "baseCost": 100, "costGrowth": 1.25,
+    "desc": "지상 공격이 가능한 유닛의 공격력 +8%/레벨."
+  },
+  {
+    "id": "air_atk", "name": "공중 공격력",
+    "appliesTo": { "attackType": ["air", "both"] },
+    "maxLevel": 20, "perLevel": 0.08,
+    "baseCost": 100, "costGrowth": 1.25,
+    "desc": "공중 공격이 가능한 유닛의 공격력 +8%/레벨."
+  },
+  {
+    "id": "physical_atk", "name": "물리 공격력",
+    "appliesTo": { "damageType": ["physical"] },
+    "maxLevel": 20, "perLevel": 0.07,
+    "baseCost": 120, "costGrowth": 1.25,
+    "desc": "물리 데미지 유닛의 공격력 +7%/레벨."
+  },
+  {
+    "id": "magic_atk", "name": "마법 공격력",
+    "appliesTo": { "damageType": ["magic"] },
+    "maxLevel": 20, "perLevel": 0.07,
+    "baseCost": 120, "costGrowth": 1.25,
+    "desc": "마법 데미지 유닛의 공격력 +7%/레벨."
+  },
+  {
+    "id": "all_atk", "name": "전체 공격력",
+    "appliesTo": {},
+    "maxLevel": 10, "perLevel": 0.05,
+    "baseCost": 300, "costGrowth": 1.35,
+    "desc": "모든 유닛의 공격력 +5%/레벨 (고비용)."
+  }
+]

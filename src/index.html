@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <title>메이플 랜덤 디펜스 가이드</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <span class="logo">🍁</span>
+      <div>
+        <h1>메이플 랜덤 디펜스 가이드</h1>
+        <p class="subtitle">유닛을 뽑을 때마다 카운트하면, 현재 조합·업그레이드에 맞는 최적 선택을 알려줍니다.</p>
+      </div>
+    </div>
+    <div class="topbar-actions">
+      <input id="search" type="search" placeholder="유닛 검색..." />
+      <button id="resetBtn" class="btn ghost" title="모든 카운트/업그레이드 초기화">초기화</button>
+    </div>
+  </header>
+
+  <main class="layout">
+    <!-- 유닛 목록 -->
+    <section class="panel units-panel">
+      <h2>유닛 목록 <span class="hint">+ / - 로 뽑은 개수를 기록</span></h2>
+      <div id="unitGrid" class="unit-grid"></div>
+    </section>
+
+    <!-- 업그레이드 -->
+    <section class="panel upgrade-panel">
+      <h2>업그레이드</h2>
+      <div id="upgradeList" class="upgrade-list"></div>
+    </section>
+
+    <!-- 추천/분석 -->
+    <section class="panel rec-panel">
+      <h2>추천 &amp; 분석</h2>
+
+      <div class="stat-row">
+        <div class="stat"><span class="stat-label">총 유닛</span><span id="statUnits" class="stat-val">0</span></div>
+        <div class="stat"><span class="stat-label">총 화력(DPS)</span><span id="statPower" class="stat-val">0</span></div>
+      </div>
+
+      <div class="comp-bars" id="compBars"></div>
+
+      <h3>합성 추천</h3>
+      <div id="combineList" class="rec-list"></div>
+
+      <h3>업그레이드 우선순위</h3>
+      <div id="upgradeRec" class="rec-list"></div>
+
+      <h3>보유 유닛 화력</h3>
+      <div id="inventory" class="rec-list"></div>
+
+      <h3>코치 노트</h3>
+      <div id="notes" class="notes"></div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <span id="dataNote"></span>
+  </footer>
+
+  <script src="engine.js"></script>
+  <script src="renderer.js"></script>
+</body>
+</html>

@@ -1,0 +1,17 @@
+{
+  "gameName": "메이플 랜덤 디펜스",
+  "note": "아래 수치/유닛/업그레이드는 예시 데이터입니다. 실제 게임 수치에 맞게 data/*.json 파일을 수정해서 사용하세요.",
+  "tiers": [
+    { "level": 1, "name": "노말",  "color": "#9aa4b2", "weight": 1 },
+    { "level": 2, "name": "고급",  "color": "#4ade80", "weight": 3 },
+    { "level": 3, "name": "희귀",  "color": "#38bdf8", "weight": 8 },
+    { "level": 4, "name": "영웅",  "color": "#a78bfa", "weight": 20 },
+    { "level": 5, "name": "전설",  "color": "#f59e0b", "weight": 50 },
+    { "level": 6, "name": "신화",  "color": "#f43f5e", "weight": 120 }
+  ],
+  "thresholds": {
+    "lowAirShare": 0.15,
+    "lowGroundShare": 0.15,
+    "lowTypeShare": 0.1
+  }
+}
