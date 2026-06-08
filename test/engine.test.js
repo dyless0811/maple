@@ -96,9 +96,35 @@ test('대형 골렘 스테이지에서는 드라군이 고스트보다 우수', 
 });
 
 test('보스 스테이지 적 표에 보스가 포함된다', () => {
-  const r = engine.analyze(DATA, { counts: {}, upgradeLevels: {}, currentStage: 5 });
+  const r = engine.analyze(DATA, { counts: {}, upgradeLevels: {}, currentStage: 58 });
   assert.ok(r.stage.boss);
   assert.ok(r.enemyTable.some((e) => e.boss));
+});
+
+test('업그레이드 비용이 7.2 등차수열(+3)로 계산된다', () => {
+  const ghost = DATA.upgrades.find((u) => u.id === 'ghost_atk'); // baseCost 12, step 3
+  assert.strictEqual(engine.upgradeCost(ghost, 0), 12);
+  assert.strictEqual(engine.upgradeCost(ghost, 1), 15);
+  assert.strictEqual(engine.upgradeCost(ghost, 2), 18);
+  // 0→3레벨 누적 = 12+15+18 = 45
+  assert.strictEqual(engine.upgradeCostTo(ghost, 0, 3), 45);
+});
+
+test('뽑기 등급 확률 합이 ~100%이고 기대값/최소1개 확률이 맞다', () => {
+  const grades = DATA.meta.grades;
+  const sum = grades.reduce((s, g) => s + g.prob, 0);
+  assert.ok(Math.abs(sum - 1) < 0.01, `확률 합 ${sum}`);
+  const exp = engine.gachaExpected(grades, 100);
+  const common = exp.find((e) => e.id === 'common');
+  assert.strictEqual(Math.round(common.expected), 50); // 0.5 × 100
+  // 레어(0.331)를 100번 안에 최소 1개 뽑을 확률은 사실상 1에 가깝다
+  assert.ok(engine.atLeastOnce(0.331, 100) > 0.999);
+});
+
+test('특정 등급 1개를 위한 기대 뽑기/미네랄', () => {
+  const r = engine.expectedPullsForOne(0.008, 10); // 서사 0.8%
+  assert.strictEqual(Math.round(r.pulls), 125);     // 1/0.008
+  assert.strictEqual(Math.round(r.minerals), 1250); // 125 × 10
 });
 
 console.log(`\n${passed}개 테스트 통과 ✅`);

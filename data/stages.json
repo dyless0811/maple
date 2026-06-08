@@ -1,12 +1,12 @@
 [
-  { "stage": 1,  "name": "1 - 슬라임 무리",   "boss": false, "spawns": [ { "enemy": "slime", "count": 12 } ] },
-  { "stage": 2,  "name": "2 - 박쥐 떼",       "boss": false, "spawns": [ { "enemy": "bat", "count": 14 } ] },
-  { "stage": 3,  "name": "3 - 오크 부대",     "boss": false, "spawns": [ { "enemy": "orc", "count": 10 } ] },
-  { "stage": 4,  "name": "4 - 혼성 (소+중)",  "boss": false, "spawns": [ { "enemy": "slime", "count": 8 }, { "enemy": "orc", "count": 6 } ] },
-  { "stage": 5,  "name": "5 - 보스: 광기의 군주", "boss": true,  "spawns": [ { "enemy": "boss_warlord", "count": 1 } ] },
-  { "stage": 6,  "name": "6 - 골렘 행렬",     "boss": false, "spawns": [ { "enemy": "golem", "count": 8 } ] },
-  { "stage": 7,  "name": "7 - 방패 기사단",   "boss": false, "spawns": [ { "enemy": "shield_knight", "count": 10 } ] },
-  { "stage": 8,  "name": "8 - 혼성 (중+대)",  "boss": false, "spawns": [ { "enemy": "orc", "count": 8 }, { "enemy": "golem", "count": 6 } ] },
-  { "stage": 9,  "name": "9 - 베히모스 군단", "boss": false, "spawns": [ { "enemy": "behemoth", "count": 6 } ] },
-  { "stage": 10, "name": "10 - 보스: 군단 모후", "boss": true, "spawns": [ { "enemy": "boss_swarm", "count": 1 } ] }
+  { "stage": 1,  "name": "1R - 달팽이",        "boss": false, "spawns": [ { "enemy": "snail", "count": 12 } ] },
+  { "stage": 2,  "name": "2R - 주황버섯",      "boss": false, "spawns": [ { "enemy": "mushroom", "count": 14 } ] },
+  { "stage": 3,  "name": "3R - 리본돼지",      "boss": false, "spawns": [ { "enemy": "pig", "count": 10 } ] },
+  { "stage": 4,  "name": "4R - 혼성(소+중)",   "boss": false, "spawns": [ { "enemy": "mushroom", "count": 8 }, { "enemy": "pig", "count": 6 } ] },
+  { "stage": 5,  "name": "5R - 돌 골렘(쉴드)", "boss": false, "spawns": [ { "enemy": "stone_golem", "count": 8 } ] },
+  { "stage": 6,  "name": "6R - 와일드보어",    "boss": false, "spawns": [ { "enemy": "boar", "count": 8 } ] },
+  { "stage": 7,  "name": "7R - 예티",          "boss": false, "spawns": [ { "enemy": "yeti", "count": 6 } ] },
+  { "stage": 8,  "name": "8R - 혼성(중+대)",   "boss": false, "spawns": [ { "enemy": "pig", "count": 8 }, { "enemy": "boar", "count": 6 } ] },
+  { "stage": 58, "name": "58R - 보스: 시계탑의 근원", "boss": true, "spawns": [ { "enemy": "boss_clocktower", "count": 1 } ] },
+  { "stage": 95, "name": "95R - 보스: 핑크빈", "boss": true, "spawns": [ { "enemy": "boss_pinkbean", "count": 1 } ] }
 ]

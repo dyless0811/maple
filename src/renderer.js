@@ -110,6 +110,31 @@ function renderModTable() {
   $('#modTable').innerHTML = html;
 }
 
+function renderGacha() {
+  const grades = DATA.meta.grades || [];
+  if (!grades.length) return;
+  const pulls = Math.max(1, Number($('#gachaPulls').value) || 1);
+  const pullCost = DATA.meta.economy?.pullCost || 0;
+  $('#gachaCost').textContent = `${pulls}회 = ${(pulls * pullCost).toLocaleString()} ${DATA.meta.economy?.pullCostUnit || '미네랄'}`;
+
+  const expected = MapleEngine.gachaExpected(grades, pulls);
+  let html = '<tr><th>등급</th><th>확률</th><th>기대 수</th><th>최소1개 확률</th></tr>';
+  for (let i = 0; i < grades.length; i++) {
+    const g = grades[i];
+    const e = expected[i];
+    const atLeast = MapleEngine.atLeastOnce(g.prob, pulls);
+    const pct = (g.prob * 100);
+    const probStr = pct >= 1 ? pct.toFixed(1) + '%' : pct.toFixed(3) + '%';
+    html += `<tr>
+      <td style="color:${g.color};font-weight:700">${g.name}</td>
+      <td>${probStr}</td>
+      <td>${e.expected >= 1 ? e.expected.toFixed(1) : e.expected.toFixed(3)}</td>
+      <td class="${atLeast >= 0.5 ? 'm-high' : atLeast >= 0.1 ? 'm-mid' : 'm-min'}">${(atLeast * 100).toFixed(1)}%</td>
+    </tr>`;
+  }
+  $('#gachaTable').innerHTML = html;
+}
+
 function renderEnemyTable(rec) {
   $('#stageTitle').textContent = rec.stage ? rec.stage.name : '스테이지';
   const el = $('#enemyTable');
@@ -178,6 +203,7 @@ function render() {
   renderUnits(rec);
   renderUpgrades();
   renderModTable();
+  renderGacha();
   renderEnemyTable(rec);
   renderRecPanel(rec);
 }
@@ -194,6 +220,7 @@ function wireEvents() {
     else if (btn.dataset.act === 'updec') setUpgrade(id, -1);
   });
   $('#stageSelect').addEventListener('change', (e) => setStage(Number(e.target.value)));
+  $('#gachaPulls').addEventListener('input', renderGacha);
   $('#stagePrev').addEventListener('click', () => setStage(state.currentStage - 1));
   $('#stageNext').addEventListener('click', () => setStage(state.currentStage + 1));
   $('#resetBtn').addEventListener('click', () => {

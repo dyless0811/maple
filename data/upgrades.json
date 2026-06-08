@@ -1,17 +1,17 @@
 [
   {
     "id": "ghost_atk", "name": "고스트 공격력", "unit": "ghost",
-    "perLevelFlat": 2, "maxLevel": 10, "baseCost": 100, "costGrowth": 1.3,
-    "desc": "고스트 공격력 +2/레벨."
+    "perLevelFlat": 2, "maxLevel": 30, "baseCost": 12, "costStep": 3,
+    "desc": "고스트 공격력 업그레이드. 7.2 초기 비용 12, 레벨당 +3원(등차)."
   },
   {
     "id": "hydra_atk", "name": "히드라 공격력", "unit": "hydra",
-    "perLevelFlat": 2, "maxLevel": 10, "baseCost": 100, "costGrowth": 1.3,
-    "desc": "히드라 공격력 +2/레벨."
+    "perLevelFlat": 1, "maxLevel": 30, "baseCost": 10, "costStep": 3,
+    "desc": "히드라 공격력 업그레이드. 7.2 초기 비용 10, 레벨당 +3원(등차). 가장 저렴."
   },
   {
     "id": "dragoon_atk", "name": "드라군 공격력", "unit": "dragoon",
-    "perLevelFlat": 3, "maxLevel": 10, "baseCost": 120, "costGrowth": 1.3,
-    "desc": "드라군 공격력 +3/레벨."
+    "perLevelFlat": 3, "maxLevel": 30, "baseCost": 12, "costStep": 3,
+    "desc": "드라군 공격력 업그레이드. 7.2 초기 비용 12, 레벨당 +3원(등차)."
   }
 ]

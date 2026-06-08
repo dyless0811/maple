@@ -93,6 +93,12 @@ html, body {
 .m-low { color: var(--normal); }
 .m-min { color: var(--bad); font-weight: 700; }
 
+/* 뽑기 계산기 */
+.gacha label { display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--muted); margin-bottom: 6px; }
+.gacha input { background: var(--panel-2); border: 1px solid var(--border); color: var(--text); border-radius: 7px; padding: 6px 8px; width: 90px; outline: none; }
+.gacha input:focus { border-color: var(--accent-2); }
+#gachaCost { margin-bottom: 8px; }
+
 /* 적 테이블 */
 .enemy-table { overflow-x: auto; }
 .etable { width: 100%; border-collapse: collapse; font-size: 12px; }

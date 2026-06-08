@@ -90,7 +90,33 @@
   }
 
   function upgradeCost(up, currentLevel) {
+    // 7.2: 비용이 등차수열(costStep)로 증가. costStep이 없으면 등비(costGrowth)로 폴백.
+    if (up.costStep != null) {
+      return Math.round(up.baseCost + currentLevel * up.costStep);
+    }
     return Math.round(up.baseCost * Math.pow(up.costGrowth || 1, currentLevel));
+  }
+
+  // 현재 레벨에서 targetLevel 까지 올리는 누적 비용
+  function upgradeCostTo(up, currentLevel, targetLevel) {
+    let total = 0;
+    for (let lvl = currentLevel; lvl < targetLevel; lvl++) total += upgradeCost(up, lvl);
+    return total;
+  }
+
+  // ── 뽑기(가챠) 확률 계산기 ──────────────────────────────────────────
+  // N번 뽑을 때 등급별 기대 횟수
+  function gachaExpected(grades, pulls) {
+    return grades.map((g) => ({ id: g.id, name: g.name, prob: g.prob, expected: g.prob * pulls }));
+  }
+  // 확률 p 등급을 N번 안에 최소 1개 뽑을 확률
+  function atLeastOnce(prob, pulls) {
+    return 1 - Math.pow(1 - prob, pulls);
+  }
+  // 확률 p 등급 1개를 위해 평균 필요한 뽑기 횟수(기하분포 기대값)와 미네랄
+  function expectedPullsForOne(prob, pullCost) {
+    const pulls = prob > 0 ? 1 / prob : Infinity;
+    return { pulls, minerals: isFinite(pulls) ? pulls * (pullCost || 0) : Infinity };
   }
 
   /**
@@ -219,8 +245,9 @@
         const u = result.upgradeSuggestions[0];
         result.tips.push(`업그레이드는 "${u.name}"(Lv.${u.currentLevel}→${u.currentLevel + 1}, 비용 ${u.nextCost})가 지금 가장 효율적입니다.`);
       }
+      result.tips.push('7.2 업그레이드 비용은 레벨당 +3원(등차)이라 분산보다 한 유닛 올인이 효율적입니다. 메인 유닛 하나에 업글을 집중하세요.');
       if (upcoming.length > 0 && futureRank[0].score > 0) {
-        result.tips.push(`앞으로 ${upcoming.length}스테이지 기준으로는 "${futureRank[0].name}" 보유가 가장 유리합니다. 약한 유닛은 팔아 정비를 고려하세요.`);
+        result.tips.push(`앞으로 ${upcoming.length}라운드 기준으로는 "${futureRank[0].name}" 보유가 가장 유리합니다. 약한 유닛은 팔아 정비를 고려하세요.`);
         // 판매 조언: 미래 가치가 0에 가깝고 보유 중인 유닛
         for (const f of futureRank) {
           const owned = counts[f.id] || 0;
@@ -236,7 +263,8 @@
 
   const api = {
     analyze, perHit, timeToKill, effDpsVsEnemy, unitValueVsStage,
-    sizeMod, upgradeBonus, upgradeCost
+    sizeMod, upgradeBonus, upgradeCost, upgradeCostTo,
+    gachaExpected, atLeastOnce, expectedPullsForOne
   };
 
   if (typeof module !== 'undefined' && module.exports) {

@@ -1,7 +1,14 @@
 {
-  "gameName": "메이플 랜덤 디펜스",
-  "note": "수치는 예시 데이터입니다. 실제 게임 값에 맞춰 data/*.json 을 수정하세요. 데미지 공식: 한 대당 = max(minDamage, 공격력×크기배율 − 방어력). 쉴드는 크기배율 없이 (공격력 − 쉴드방어력).",
+  "gameName": "메이플 운빨 디펜스",
+  "version": "7.2",
+  "note": "공격타입/크기 배율·뽑기 확률·업그레이드 비용·경제는 7.2 기준 확인값입니다. 라운드/몬스터 상세 수치와 등급별 유닛 스탯은 예시이니 실제 값으로 data/*.json 을 보정하세요.",
   "minDamage": 0.5,
+  "economy": {
+    "pullCost": 10,
+    "pullCostUnit": "미네랄",
+    "gasPerMineral": { "gas": 10, "mineral": 5 },
+    "note": "유닛 뽑기 10미네랄. 적 처치 시 가스 획득, 10가스마다 5미네랄."
+  },
   "sizes": [
     { "id": "small",  "name": "소형" },
     { "id": "medium", "name": "중형" },
@@ -17,5 +24,16 @@
     "normal":     { "small": 1.0, "medium": 1.0,  "large": 1.0 },
     "explosive":  { "small": 0.5, "medium": 0.75, "large": 1.0 }
   },
-  "shieldIgnoresSize": true
+  "shieldIgnoresSize": true,
+  "grades": [
+    { "id": "common",     "name": "일반", "prob": 0.50,    "color": "#9aa4b2" },
+    { "id": "rare",       "name": "레어", "prob": 0.331,   "color": "#4ade80" },
+    { "id": "ancient",    "name": "고대", "prob": 0.102,   "color": "#38bdf8" },
+    { "id": "relic",      "name": "유물", "prob": 0.051,   "color": "#22d3ee" },
+    { "id": "epic_saga",  "name": "서사", "prob": 0.008,   "color": "#a78bfa" },
+    { "id": "legendary",  "name": "전설", "prob": 0.005,   "color": "#f59e0b" },
+    { "id": "epic",       "name": "에픽", "prob": 0.002,   "color": "#fb7185" },
+    { "id": "mythic",     "name": "신화", "prob": 0.0008,  "color": "#f43f5e" },
+    { "id": "primordial", "name": "태초", "prob": 0.00019, "color": "#e879f9" }
+  ]
 }

@@ -1,20 +1,17 @@
 [
   {
     "id": "ghost", "name": "고스트", "damageType": "concussive",
-    "damage": 20, "cooldown": 1.0, "atkUpgrade": "ghost_atk",
-    "desc": "진동형. 소형에 100%, 중형 50%, 대형 25%. 소형 물량에 최강.",
-    "sellValue": 50
+    "damage": 20, "cooldown": 1.0, "atkUpgrade": "ghost_atk", "sellValue": 5,
+    "desc": "진동형. 기본 DPS가 가장 높지만 중형 50%·대형 25%로 큰 적엔 약함. 소형 위주 라운드에 강력."
   },
   {
     "id": "hydra", "name": "히드라", "damageType": "normal",
-    "damage": 10, "cooldown": 0.6, "atkUpgrade": "hydra_atk",
-    "desc": "노말형. 모든 크기에 100%. 어떤 적이 와도 무난한 만능형.",
-    "sellValue": 50
+    "damage": 10, "cooldown": 0.6, "atkUpgrade": "hydra_atk", "sellValue": 5,
+    "desc": "노말형. 기본 데미지는 낮지만 모든 크기 100% + 업글이 가장 저렴해 범용성 최고. 메인 유닛 추천."
   },
   {
     "id": "dragoon", "name": "드라군", "damageType": "explosive",
-    "damage": 25, "cooldown": 1.3, "atkUpgrade": "dragoon_atk",
-    "desc": "폭발형. 대형 100%, 중형 75%, 소형 50%. 대형/보스에 최강.",
-    "sellValue": 50
+    "damage": 25, "cooldown": 1.3, "atkUpgrade": "dragoon_atk", "sellValue": 5,
+    "desc": "폭발형. 대형 100%·중형 75%, 보스/대형에 매우 강함. 소형 50%지만 기본 공격력이 높아 무난."
   }
 ]
