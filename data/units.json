@@ -1,92 +1,20 @@
 [
   {
-    "id": "fire_archer", "name": "불 궁수", "tier": 1,
-    "attackType": "both", "damageType": "physical", "dps": 25,
-    "synergy": ["궁수"], "combineCount": 3, "combinesTo": "arcane_archer",
-    "desc": "지상/공중 모두 공격 가능한 기본 궁수."
+    "id": "ghost", "name": "고스트", "damageType": "concussive",
+    "damage": 20, "cooldown": 1.0, "atkUpgrade": "ghost_atk",
+    "desc": "진동형. 소형에 100%, 중형 50%, 대형 25%. 소형 물량에 최강.",
+    "sellValue": 50
   },
   {
-    "id": "arcane_archer", "name": "비전 궁수", "tier": 2,
-    "attackType": "both", "damageType": "magic", "dps": 70,
-    "synergy": ["궁수", "마법"], "combineCount": 3, "combinesTo": "storm_archer",
-    "desc": "마법 화살로 전환한 궁수. 만능형."
+    "id": "hydra", "name": "히드라", "damageType": "normal",
+    "damage": 10, "cooldown": 0.6, "atkUpgrade": "hydra_atk",
+    "desc": "노말형. 모든 크기에 100%. 어떤 적이 와도 무난한 만능형.",
+    "sellValue": 50
   },
   {
-    "id": "storm_archer", "name": "폭풍 궁수", "tier": 3,
-    "attackType": "both", "damageType": "magic", "dps": 180,
-    "synergy": ["궁수", "마법"], "combineCount": 0, "combinesTo": null,
-    "desc": "광역 마법 화살. 공중/지상 모두 강력."
-  },
-  {
-    "id": "swordman", "name": "검사", "tier": 1,
-    "attackType": "ground", "damageType": "physical", "dps": 32,
-    "synergy": ["전사"], "combineCount": 3, "combinesTo": "knight",
-    "desc": "근접 지상 딜러."
-  },
-  {
-    "id": "knight", "name": "기사", "tier": 2,
-    "attackType": "ground", "damageType": "physical", "dps": 88,
-    "synergy": ["전사"], "combineCount": 3, "combinesTo": "paladin",
-    "desc": "단단한 지상 물리 딜러."
-  },
-  {
-    "id": "paladin", "name": "성기사", "tier": 3,
-    "attackType": "ground", "damageType": "physical", "dps": 205,
-    "synergy": ["전사", "신성"], "combineCount": 0, "combinesTo": null,
-    "desc": "고화력 지상 물리 딜러."
-  },
-  {
-    "id": "mage", "name": "마법사", "tier": 1,
-    "attackType": "both", "damageType": "magic", "dps": 28,
-    "synergy": ["마법"], "combineCount": 3, "combinesTo": "wizard",
-    "desc": "지상/공중 마법 딜러."
-  },
-  {
-    "id": "wizard", "name": "위저드", "tier": 2,
-    "attackType": "both", "damageType": "magic", "dps": 92,
-    "synergy": ["마법"], "combineCount": 3, "combinesTo": "archmage",
-    "desc": "광역 마법 딜러."
-  },
-  {
-    "id": "archmage", "name": "대마법사", "tier": 4,
-    "attackType": "both", "damageType": "magic", "dps": 260,
-    "synergy": ["마법"], "combineCount": 0, "combinesTo": null,
-    "desc": "최상위 마법 딜러. 만능형."
-  },
-  {
-    "id": "cannon", "name": "캐논", "tier": 2,
-    "attackType": "ground", "damageType": "physical", "dps": 120,
-    "synergy": ["기계"], "combineCount": 3, "combinesTo": "siege",
-    "desc": "지상 전용 고화력 포대."
-  },
-  {
-    "id": "siege", "name": "시즈 탱크", "tier": 3,
-    "attackType": "ground", "damageType": "physical", "dps": 280,
-    "synergy": ["기계"], "combineCount": 0, "combinesTo": null,
-    "desc": "지상 광역 초고화력. 공중 공격 불가."
-  },
-  {
-    "id": "flak", "name": "대공포", "tier": 2,
-    "attackType": "air", "damageType": "physical", "dps": 110,
-    "synergy": ["기계", "대공"], "combineCount": 3, "combinesTo": "missile",
-    "desc": "공중 전용 화력. 지상 공격 불가."
-  },
-  {
-    "id": "missile", "name": "미사일 포대", "tier": 3,
-    "attackType": "air", "damageType": "physical", "dps": 255,
-    "synergy": ["기계", "대공"], "combineCount": 0, "combinesTo": null,
-    "desc": "공중 광역 초고화력."
-  },
-  {
-    "id": "dragon", "name": "드래곤", "tier": 5,
-    "attackType": "both", "damageType": "magic", "dps": 420,
-    "synergy": ["용", "마법"], "combineCount": 0, "combinesTo": null,
-    "desc": "전설급 만능 딜러."
-  },
-  {
-    "id": "golden_slime", "name": "황금 슬라임", "tier": 6,
-    "attackType": "both", "damageType": "physical", "dps": 720,
-    "synergy": ["보물"], "combineCount": 0, "combinesTo": null,
-    "desc": "신화급. 모든 대상에 압도적 화력."
+    "id": "dragoon", "name": "드라군", "damageType": "explosive",
+    "damage": 25, "cooldown": 1.3, "atkUpgrade": "dragoon_atk",
+    "desc": "폭발형. 대형 100%, 중형 75%, 소형 50%. 대형/보스에 최강.",
+    "sellValue": 50
   }
 ]

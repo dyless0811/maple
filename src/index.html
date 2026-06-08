@@ -11,56 +11,61 @@
       <span class="logo">🍁</span>
       <div>
         <h1>메이플 랜덤 디펜스 가이드</h1>
-        <p class="subtitle">유닛을 뽑을 때마다 카운트하면, 현재 조합·업그레이드에 맞는 최적 선택을 알려줍니다.</p>
+        <p class="subtitle">뽑은 유닛을 카운트하고 목표 스테이지를 고르면, 데미지 타입·크기 배율에 맞춰 최적 유닛/업그레이드를 추천합니다.</p>
       </div>
     </div>
     <div class="topbar-actions">
-      <input id="search" type="search" placeholder="유닛 검색..." />
-      <button id="resetBtn" class="btn ghost" title="모든 카운트/업그레이드 초기화">초기화</button>
+      <div class="stage-nav">
+        <button id="stagePrev" class="btn ghost">◀</button>
+        <select id="stageSelect"></select>
+        <button id="stageNext" class="btn ghost">▶</button>
+      </div>
+      <button id="resetBtn" class="btn ghost" title="카운트/업그레이드 초기화">초기화</button>
     </div>
   </header>
 
   <main class="layout">
-    <!-- 유닛 목록 -->
+    <!-- 보유 유닛 -->
     <section class="panel units-panel">
-      <h2>유닛 목록 <span class="hint">+ / - 로 뽑은 개수를 기록</span></h2>
-      <div id="unitGrid" class="unit-grid"></div>
-    </section>
+      <h2>보유 유닛 <span class="hint">뽑으면 + · 팔면 −</span></h2>
+      <div id="unitList" class="unit-list"></div>
 
-    <!-- 업그레이드 -->
-    <section class="panel upgrade-panel">
-      <h2>업그레이드</h2>
+      <h3>업그레이드</h3>
       <div id="upgradeList" class="upgrade-list"></div>
+
+      <h3>데미지 배율표</h3>
+      <table class="mod-table" id="modTable"></table>
     </section>
 
-    <!-- 추천/분석 -->
+    <!-- 스테이지 적 정보 -->
+    <section class="panel stage-panel">
+      <h2 id="stageTitle">스테이지</h2>
+      <div id="enemyTable" class="enemy-table"></div>
+    </section>
+
+    <!-- 추천 -->
     <section class="panel rec-panel">
       <h2>추천 &amp; 분석</h2>
-
       <div class="stat-row">
         <div class="stat"><span class="stat-label">총 유닛</span><span id="statUnits" class="stat-val">0</span></div>
-        <div class="stat"><span class="stat-label">총 화력(DPS)</span><span id="statPower" class="stat-val">0</span></div>
+        <div class="stat"><span class="stat-label">이번 스테이지 화력</span><span id="statPower" class="stat-val">0</span></div>
       </div>
 
-      <div class="comp-bars" id="compBars"></div>
-
-      <h3>합성 추천</h3>
-      <div id="combineList" class="rec-list"></div>
+      <h3>이번 스테이지 최적 유닛</h3>
+      <div id="bestUnit" class="rec-list"></div>
 
       <h3>업그레이드 우선순위</h3>
       <div id="upgradeRec" class="rec-list"></div>
 
-      <h3>보유 유닛 화력</h3>
-      <div id="inventory" class="rec-list"></div>
+      <h3>판매 조언</h3>
+      <div id="sellAdvice" class="rec-list"></div>
 
       <h3>코치 노트</h3>
       <div id="notes" class="notes"></div>
     </section>
   </main>
 
-  <footer class="footer">
-    <span id="dataNote"></span>
-  </footer>
+  <footer class="footer"><span id="dataNote"></span></footer>
 
   <script src="engine.js"></script>
   <script src="renderer.js"></script>

@@ -1,73 +1,104 @@
 'use strict';
 
-// 엔진 동작을 빠르게 검증하는 가벼운 테스트 (의존성 없음)
+// 의존성 없는 가벼운 테스트
 const assert = require('assert');
 const fs = require('fs');
 const path = require('path');
 const engine = require('../src/engine.js');
 
+const load = (f) => JSON.parse(fs.readFileSync(path.join(__dirname, '../data', f), 'utf-8'));
 const DATA = {
-  units: JSON.parse(fs.readFileSync(path.join(__dirname, '../data/units.json'), 'utf-8')),
-  upgrades: JSON.parse(fs.readFileSync(path.join(__dirname, '../data/upgrades.json'), 'utf-8')),
-  meta: JSON.parse(fs.readFileSync(path.join(__dirname, '../data/meta.json'), 'utf-8'))
+  units: load('units.json'),
+  upgrades: load('upgrades.json'),
+  enemies: load('enemies.json'),
+  stages: load('stages.json'),
+  meta: load('meta.json')
 };
 
+const U = (id) => DATA.units.find((u) => u.id === id);
+const E = (id) => DATA.enemies.find((e) => e.id === id);
+
 let passed = 0;
-function test(name, fn) {
-  fn();
-  passed++;
-  console.log(`  ✓ ${name}`);
-}
+function test(name, fn) { fn(); passed++; console.log(`  ✓ ${name}`); }
 
 console.log('engine 테스트');
 
-test('빈 상태는 0 화력, 안내 팁 제공', () => {
-  const r = engine.analyze(DATA, { counts: {}, upgradeLevels: {} });
-  assert.strictEqual(r.totalPower, 0);
-  assert.strictEqual(r.totalUnits, 0);
-  assert.ok(r.tips.length > 0);
+test('진동형(고스트)은 소형에 풀데미지, 대형에 25%', () => {
+  const ghost = U('ghost');
+  const small = { size: 'small', hp: 1000, armor: 0, shield: 0, shieldArmor: 0, hpRegen: 0 };
+  const large = { size: 'large', hp: 1000, armor: 0, shield: 0, shieldArmor: 0, hpRegen: 0 };
+  const onSmall = engine.perHit(ghost, small, DATA.meta, 0).hpDmg;
+  const onLarge = engine.perHit(ghost, large, DATA.meta, 0).hpDmg;
+  assert.strictEqual(onSmall, 20);          // 20 × 1.0
+  assert.strictEqual(onLarge, 5);           // 20 × 0.25
 });
 
-test('실효 DPS에 업그레이드가 반영된다', () => {
-  const sword = DATA.units.find((u) => u.id === 'swordman');
-  const base = engine.effectiveDps(sword, DATA.upgrades, {});
-  const up = engine.effectiveDps(sword, DATA.upgrades, { ground_atk: 10 });
-  assert.strictEqual(base, sword.dps);
-  assert.ok(up > base, '업그레이드 후 DPS가 증가해야 함');
+test('폭발형(드라군)은 대형에 풀데미지, 소형에 50%', () => {
+  const d = U('dragoon');
+  const small = { size: 'small', hp: 1000, armor: 0 };
+  const large = { size: 'large', hp: 1000, armor: 0 };
+  assert.strictEqual(engine.perHit(d, small, DATA.meta, 0).hpDmg, 12.5); // 25 × 0.5
+  assert.strictEqual(engine.perHit(d, large, DATA.meta, 0).hpDmg, 25);   // 25 × 1.0
 });
 
-test('합성 가능 개수를 정확히 추천한다', () => {
-  const r = engine.analyze(DATA, { counts: { swordman: 7 }, upgradeLevels: {} });
-  const c = r.combineSuggestions.find((x) => x.fromId === 'swordman');
-  assert.ok(c, '검사 합성 추천이 있어야 함');
-  assert.strictEqual(c.toId, 'knight');
-  assert.strictEqual(c.times, 2); // 7 / 3 = 2회
+test('노말형(히드라)은 모든 크기에 동일 배율', () => {
+  const h = U('hydra');
+  const mk = (size) => ({ size, hp: 1000, armor: 0 });
+  const s = engine.perHit(h, mk('small'), DATA.meta, 0).hpDmg;
+  const m = engine.perHit(h, mk('medium'), DATA.meta, 0).hpDmg;
+  const l = engine.perHit(h, mk('large'), DATA.meta, 0).hpDmg;
+  assert.ok(s === m && m === l);
 });
 
-test('합성 개수 미달이면 추천하지 않는다', () => {
-  const r = engine.analyze(DATA, { counts: { swordman: 2 }, upgradeLevels: {} });
-  assert.ok(!r.combineSuggestions.find((x) => x.fromId === 'swordman'));
+test('방어력은 크기배율 적용 후 차감되고 최소 데미지가 보장된다', () => {
+  const ghost = U('ghost'); // 진동, dmg 20
+  // 대형 + 높은 방어력 → 20×0.25=5, armor 12 → max(0.5, 5-12)=0.5
+  const tanky = { size: 'large', hp: 100, armor: 12 };
+  assert.strictEqual(engine.perHit(ghost, tanky, DATA.meta, 0).hpDmg, 0.5);
 });
 
-test('공중 화력이 없으면 경고한다', () => {
-  // siege(지상 전용)만 보유 → 공중 화력 0
-  const r = engine.analyze(DATA, { counts: { siege: 3 }, upgradeLevels: {} });
-  assert.strictEqual(r.composition.airShare, 0);
-  assert.ok(r.warnings.some((w) => w.includes('공중')), '공중 부족 경고가 있어야 함');
+test('쉴드는 크기배율 무시하고 쉴드방어력만 차감', () => {
+  const ghost = U('ghost'); // dmg 20, 진동
+  const enemy = { size: 'large', hp: 100, armor: 0, shield: 50, shieldArmor: 2 };
+  const ph = engine.perHit(ghost, enemy, DATA.meta, 0);
+  assert.strictEqual(ph.shieldDmg, 18);  // 20 - 2, 크기배율 무시
+  assert.strictEqual(ph.hpDmg, 5);       // 20 × 0.25 (대형)
 });
 
-test('업그레이드 추천은 비용 대비 효율순으로 정렬된다', () => {
-  const r = engine.analyze(DATA, { counts: { swordman: 5, mage: 5 }, upgradeLevels: {} });
-  assert.ok(r.upgradeSuggestions.length > 0);
-  for (let i = 1; i < r.upgradeSuggestions.length; i++) {
-    assert.ok(r.upgradeSuggestions[i - 1].ratio >= r.upgradeSuggestions[i].ratio);
-  }
+test('체젠이 HP 데미지를 넘으면 처치 불가(Infinity)', () => {
+  const ghost = U('ghost'); // 대형에 5 데미지/1초
+  const regenTank = { size: 'large', hp: 500, armor: 0, shield: 0, hpRegen: 10 };
+  assert.strictEqual(engine.timeToKill(ghost, regenTank, DATA.meta, 0), Infinity);
+  assert.strictEqual(engine.effDpsVsEnemy(ghost, regenTank, DATA.meta, 0), 0);
 });
 
-test('적용 대상이 없는 업그레이드는 추천에서 제외된다', () => {
-  // 지상 전용 유닛만 보유 → 공중 공격력 업그레이드는 화력 증가 0 이므로 제외
-  const r = engine.analyze(DATA, { counts: { swordman: 3 }, upgradeLevels: {} });
-  assert.ok(!r.upgradeSuggestions.find((u) => u.id === 'air_atk'));
+test('업그레이드가 데미지에 반영된다', () => {
+  const ghost = U('ghost');
+  const target = { size: 'small', hp: 1000, armor: 0 };
+  const base = engine.perHit(ghost, target, DATA.meta, 0).hpDmg;
+  const bonus = engine.upgradeBonus(ghost, DATA.upgrades, { ghost_atk: 5 });
+  const up = engine.perHit(ghost, target, DATA.meta, bonus).hpDmg;
+  assert.strictEqual(bonus, 10);        // 5 × +2
+  assert.strictEqual(up, base + 10);
+});
+
+test('소형 스테이지에서는 고스트가 최적 추천', () => {
+  // 1스테이지 = 소형 슬라임
+  const r = engine.analyze(DATA, { counts: { ghost: 1, hydra: 1, dragoon: 1 }, upgradeLevels: {}, currentStage: 1 });
+  assert.strictEqual(r.bestUnitId, 'ghost');
+});
+
+test('대형 골렘 스테이지에서는 드라군이 고스트보다 우수', () => {
+  const r = engine.analyze(DATA, { counts: {}, upgradeLevels: {}, currentStage: 6 });
+  const ghost = r.perUnit.find((p) => p.id === 'ghost');
+  const dragoon = r.perUnit.find((p) => p.id === 'dragoon');
+  assert.ok(dragoon.valuePerUnit > ghost.valuePerUnit);
+});
+
+test('보스 스테이지 적 표에 보스가 포함된다', () => {
+  const r = engine.analyze(DATA, { counts: {}, upgradeLevels: {}, currentStage: 5 });
+  assert.ok(r.stage.boss);
+  assert.ok(r.enemyTable.some((e) => e.boss));
 });
 
 console.log(`\n${passed}개 테스트 통과 ✅`);

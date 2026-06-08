@@ -1,17 +1,21 @@
 {
   "gameName": "메이플 랜덤 디펜스",
-  "note": "아래 수치/유닛/업그레이드는 예시 데이터입니다. 실제 게임 수치에 맞게 data/*.json 파일을 수정해서 사용하세요.",
-  "tiers": [
-    { "level": 1, "name": "노말",  "color": "#9aa4b2", "weight": 1 },
-    { "level": 2, "name": "고급",  "color": "#4ade80", "weight": 3 },
-    { "level": 3, "name": "희귀",  "color": "#38bdf8", "weight": 8 },
-    { "level": 4, "name": "영웅",  "color": "#a78bfa", "weight": 20 },
-    { "level": 5, "name": "전설",  "color": "#f59e0b", "weight": 50 },
-    { "level": 6, "name": "신화",  "color": "#f43f5e", "weight": 120 }
+  "note": "수치는 예시 데이터입니다. 실제 게임 값에 맞춰 data/*.json 을 수정하세요. 데미지 공식: 한 대당 = max(minDamage, 공격력×크기배율 − 방어력). 쉴드는 크기배율 없이 (공격력 − 쉴드방어력).",
+  "minDamage": 0.5,
+  "sizes": [
+    { "id": "small",  "name": "소형" },
+    { "id": "medium", "name": "중형" },
+    { "id": "large",  "name": "대형" }
   ],
-  "thresholds": {
-    "lowAirShare": 0.15,
-    "lowGroundShare": 0.15,
-    "lowTypeShare": 0.1
-  }
+  "damageTypes": [
+    { "id": "concussive", "name": "진동형" },
+    { "id": "normal",     "name": "노말형" },
+    { "id": "explosive",  "name": "폭발형" }
+  ],
+  "sizeModifiers": {
+    "concussive": { "small": 1.0, "medium": 0.5,  "large": 0.25 },
+    "normal":     { "small": 1.0, "medium": 1.0,  "large": 1.0 },
+    "explosive":  { "small": 0.5, "medium": 0.75, "large": 1.0 }
+  },
+  "shieldIgnoresSize": true
 }

@@ -1,190 +1,243 @@
 'use strict';
 
 /**
- * 메이플 랜덤 디펜스 추천 엔진
+ * 메이플 랜덤 디펜스 추천 엔진 (데미지 타입 × 적 크기 기반)
  *
- * 입력: 게임 데이터(units, upgrades, meta)와 플레이어 상태(보유 유닛 카운트, 업그레이드 레벨)
- * 출력: 조합/합성/업그레이드 추천 및 진영 분석
+ * 데미지 공식 (한 대당):
+ *   HP 데미지  = max(minDamage, 공격력 × 크기배율 − 방어력)
+ *   쉴드 데미지 = max(minDamage, 공격력 − 쉴드방어력)   ← 쉴드는 크기배율 무시
+ *
+ * 적이 쉴드를 가지면 쉴드를 먼저 깎은 뒤 HP를 깎는다.
+ * 체젠(hpRegen)은 HP에만 적용되며, 초당 회복량이 HP 데미지를 넘으면 "처치 불가".
  *
  * 브라우저(window.MapleEngine)와 Node(module.exports) 양쪽에서 동작.
  */
 (function (root) {
-  // appliesTo 조건이 해당 유닛에 맞는지 검사
-  function unitMatches(unit, appliesTo) {
-    for (const key of Object.keys(appliesTo || {})) {
-      const cond = appliesTo[key];
-      const val = unit[key];
-      if (Array.isArray(cond)) {
-        if (!cond.includes(val)) return false;
-      } else if (val !== cond) {
-        return false;
-      }
-    }
-    return true;
+  function sizeMod(meta, damageType, size) {
+    const table = (meta.sizeModifiers || {})[damageType];
+    if (!table) return 1;
+    return table[size] != null ? table[size] : 1;
   }
 
-  // 특정 유닛에 적용되는 모든 업그레이드를 반영한 실효 DPS
-  function effectiveDps(unit, upgrades, levels) {
-    let multiplier = 1;
+  function upgradeBonus(unit, upgrades, levels) {
+    let bonus = 0;
     for (const up of upgrades) {
-      if (!unitMatches(unit, up.appliesTo)) continue;
+      if (up.unit !== unit.id) continue;
       const lvl = (levels && levels[up.id]) || 0;
-      multiplier *= 1 + lvl * up.perLevel;
+      bonus += lvl * (up.perLevelFlat || 0);
     }
-    return unit.dps * multiplier;
+    return bonus;
   }
 
-  // 업그레이드를 levelOverride 레벨로 가정했을 때의 실효 DPS (한계효용 계산용)
-  function effectiveDpsWithOverride(unit, upgrades, levels, overrideId, overrideLevel) {
-    const patched = Object.assign({}, levels);
-    patched[overrideId] = overrideLevel;
-    return effectiveDps(unit, upgrades, patched);
-  }
-
-  // 다음 레벨로 올리는 비용
-  function upgradeCost(up, currentLevel) {
-    return Math.round(up.baseCost * Math.pow(up.costGrowth, currentLevel));
-  }
-
-  function tierOf(meta, level) {
-    return (meta.tiers || []).find((t) => t.level === level) || { name: `T${level}`, color: '#9aa4b2', weight: 1 };
+  // 유닛 1기가 적 1기에게 가하는 한 대당 데미지 (HP/쉴드 분리)
+  function perHit(unit, enemy, meta, bonus) {
+    const min = meta.minDamage != null ? meta.minDamage : 0.5;
+    const atk = unit.damage + (bonus || 0);
+    const mod = sizeMod(meta, unit.damageType, enemy.size);
+    const hpDmg = Math.max(min, atk * mod - (enemy.armor || 0));
+    const shieldDmg = Math.max(min, atk - (enemy.shieldArmor || 0));
+    return { hpDmg, shieldDmg, atk, mod };
   }
 
   /**
-   * 메인 분석 함수
-   * @param {{units:Array, upgrades:Array, meta:Object}} data
-   * @param {{counts:Object, upgradeLevels:Object}} state
+   * 유닛 1기가 적 1기를 처치하는 데 걸리는 시간(초).
+   * 처치 불가(체젠 벽)면 Infinity.
+   */
+  function timeToKill(unit, enemy, meta, bonus) {
+    const cd = unit.cooldown || 1;
+    const { hpDmg, shieldDmg } = perHit(unit, enemy, meta, bonus);
+
+    let hits = 0;
+    const shield = enemy.shield || 0;
+    if (shield > 0) hits += Math.ceil(shield / shieldDmg);
+
+    const hp = enemy.hp || 0;
+    const regenPerHit = (enemy.hpRegen || 0) * cd;
+    const netHpDmg = hpDmg - regenPerHit;
+    if (netHpDmg <= 0) return Infinity; // 체젠이 HP 데미지를 따라잡지 못함
+    hits += Math.ceil(hp / netHpDmg);
+
+    return hits * cd;
+  }
+
+  // 유닛 1기의 적 1기에 대한 실효 DPS ((쉴드+HP) / 처치시간). 처치 불가면 0.
+  function effDpsVsEnemy(unit, enemy, meta, bonus) {
+    const ttk = timeToKill(unit, enemy, meta, bonus);
+    if (!isFinite(ttk) || ttk <= 0) return 0;
+    return ((enemy.shield || 0) + (enemy.hp || 0)) / ttk;
+  }
+
+  function enemiesOfStage(stage, enemyById) {
+    const list = [];
+    for (const sp of (stage.spawns || [])) {
+      const e = enemyById[sp.enemy];
+      if (e) list.push({ enemy: e, count: sp.count || 1 });
+    }
+    return list;
+  }
+
+  // 유닛 1기가 스테이지 전체에 대해 갖는 가치 = 적 수로 가중한 실효 DPS 합
+  function unitValueVsStage(unit, stage, meta, bonus, enemyById) {
+    const list = enemiesOfStage(stage, enemyById);
+    let value = 0;
+    const unkillable = [];
+    for (const { enemy, count } of list) {
+      const dps = effDpsVsEnemy(unit, enemy, meta, bonus);
+      if (dps === 0) unkillable.push(enemy.name);
+      value += dps * count;
+    }
+    return { value, unkillable };
+  }
+
+  function upgradeCost(up, currentLevel) {
+    return Math.round(up.baseCost * Math.pow(up.costGrowth || 1, currentLevel));
+  }
+
+  /**
+   * 메인 분석
+   * @param {{units,upgrades,enemies,stages,meta}} data
+   * @param {{counts,upgradeLevels,currentStage}} state
    */
   function analyze(data, state) {
     const units = data.units || [];
     const upgrades = data.upgrades || [];
+    const enemies = data.enemies || [];
+    const stages = data.stages || [];
     const meta = data.meta || {};
     const counts = (state && state.counts) || {};
     const levels = (state && state.upgradeLevels) || {};
-    const unitById = {};
-    for (const u of units) unitById[u.id] = u;
 
-    // ── 보유 유닛별 화력 ──
-    const byUnit = [];
-    let totalPower = 0;
-    let totalUnits = 0;
-    let groundPower = 0; // 지상 대상에 가할 수 있는 화력
-    let airPower = 0; // 공중 대상에 가할 수 있는 화력
-    let physicalPower = 0;
-    let magicPower = 0;
+    const enemyById = {};
+    for (const e of enemies) enemyById[e.id] = e;
 
-    for (const u of units) {
-      const count = counts[u.id] || 0;
-      if (count <= 0) continue;
-      const eff = effectiveDps(u, upgrades, levels);
-      const total = eff * count;
-      totalPower += total;
-      totalUnits += count;
-      if (u.attackType === 'ground' || u.attackType === 'both') groundPower += total;
-      if (u.attackType === 'air' || u.attackType === 'both') airPower += total;
-      if (u.damageType === 'physical') physicalPower += total;
-      if (u.damageType === 'magic') magicPower += total;
-      byUnit.push({
-        id: u.id, name: u.name, tier: u.tier, tierName: tierOf(meta, u.tier).name,
-        count, effDps: Math.round(eff), totalDps: Math.round(total),
-        attackType: u.attackType, damageType: u.damageType
+    const totalUnits = units.reduce((s, u) => s + (counts[u.id] || 0), 0);
+
+    // 현재(목표) 스테이지
+    const curNum = (state && state.currentStage) || (stages[0] ? stages[0].stage : 1);
+    const stage = stages.find((s) => s.stage === curNum) || stages[0] || null;
+
+    const result = {
+      totalUnits,
+      stage: stage ? { stage: stage.stage, name: stage.name, boss: !!stage.boss } : null,
+      enemyTable: [],
+      perUnit: [],
+      bestUnitId: null,
+      armyDps: 0,
+      upgradeSuggestions: [],
+      warnings: [],
+      tips: [],
+      sellAdvice: []
+    };
+
+    if (!stage) {
+      result.tips.push('스테이지 데이터가 없습니다. data/stages.json 을 확인하세요.');
+      return result;
+    }
+
+    const bonusOf = (u) => upgradeBonus(u, upgrades, levels);
+
+    // 스테이지 적 표 (유닛별 처치시간 포함)
+    for (const { enemy, count } of enemiesOfStage(stage, enemyById)) {
+      const perUnitTtk = {};
+      for (const u of units) {
+        const ttk = timeToKill(u, enemy, meta, bonusOf(u));
+        perUnitTtk[u.id] = isFinite(ttk) ? Math.round(ttk * 10) / 10 : null;
+      }
+      result.enemyTable.push({
+        id: enemy.id, name: enemy.name, size: enemy.size, boss: !!enemy.boss, count,
+        hp: enemy.hp, armor: enemy.armor, shield: enemy.shield || 0,
+        shieldArmor: enemy.shieldArmor || 0, hpRegen: enemy.hpRegen || 0,
+        ttk: perUnitTtk
       });
     }
-    byUnit.sort((a, b) => b.totalDps - a.totalDps);
 
-    // ── 합성 추천 ──
-    const combineSuggestions = [];
+    // 유닛별 스테이지 가치 + 보유 화력
+    let best = null;
+    let armyDps = 0;
     for (const u of units) {
-      const count = counts[u.id] || 0;
-      if (!u.combinesTo || !u.combineCount || u.combineCount <= 0) continue;
-      if (count < u.combineCount) continue;
-      const target = unitById[u.combinesTo];
-      if (!target) continue;
-      const times = Math.floor(count / u.combineCount);
-      combineSuggestions.push({
-        fromId: u.id, fromName: u.name, fromTier: u.tier,
-        toId: target.id, toName: target.name, toTier: target.tier,
-        need: u.combineCount, have: count, times,
-        tierGain: target.tier - u.tier
-      });
+      const { value, unkillable } = unitValueVsStage(u, stage, meta, bonusOf(u), enemyById);
+      const owned = counts[u.id] || 0;
+      armyDps += value * owned;
+      const row = {
+        id: u.id, name: u.name, damageType: u.damageType,
+        owned, valuePerUnit: Math.round(value), unkillable
+      };
+      result.perUnit.push(row);
+      if (!best || value > best.valuePerUnit) best = row;
+      if (unkillable.length > 0) {
+        result.warnings.push(`${u.name}(으)로는 이 스테이지의 ${unkillable.join(', ')} 을(를) 잡을 수 없습니다 (체젠 벽).`);
+      }
     }
-    // 더 높은 등급으로 가는 합성 우선
-    combineSuggestions.sort((a, b) => b.toTier - a.toTier || b.times - a.times);
+    // 가치 내림차순
+    result.perUnit.sort((a, b) => b.valuePerUnit - a.valuePerUnit);
+    result.bestUnitId = best ? best.id : null;
+    result.armyDps = Math.round(armyDps);
 
-    // ── 업그레이드 추천 (비용 대비 화력 증가) ──
-    const upgradeSuggestions = [];
+    // 업그레이드 추천 (현재 스테이지 기준 비용 대비 화력 증가)
     for (const up of upgrades) {
       const cur = levels[up.id] || 0;
       if (cur >= up.maxLevel) continue;
-      let marginalDps = 0;
-      for (const u of units) {
-        const count = counts[u.id] || 0;
-        if (count <= 0 || !unitMatches(u, up.appliesTo)) continue;
-        const before = effectiveDps(u, upgrades, levels);
-        const after = effectiveDpsWithOverride(u, upgrades, levels, up.id, cur + 1);
-        marginalDps += (after - before) * count;
-      }
-      if (marginalDps <= 0) continue;
+      const unit = units.find((u) => u.id === up.unit);
+      if (!unit) continue;
+      const owned = counts[unit.id] || 0;
+      if (owned <= 0) continue;
+      const before = unitValueVsStage(unit, stage, meta, bonusOf(unit), enemyById).value;
+      const patched = Object.assign({}, levels, { [up.id]: cur + 1 });
+      const after = unitValueVsStage(unit, stage, meta, upgradeBonus(unit, upgrades, patched), enemyById).value;
+      const marginal = (after - before) * owned;
+      if (marginal <= 0) continue;
       const cost = upgradeCost(up, cur);
-      upgradeSuggestions.push({
+      result.upgradeSuggestions.push({
         id: up.id, name: up.name, currentLevel: cur, maxLevel: up.maxLevel,
-        nextCost: cost, marginalDps: Math.round(marginalDps),
-        ratio: marginalDps / cost
+        nextCost: cost, marginalDps: Math.round(marginal), ratio: marginal / cost
       });
     }
-    upgradeSuggestions.sort((a, b) => b.ratio - a.ratio);
+    result.upgradeSuggestions.sort((a, b) => b.ratio - a.ratio);
 
-    // ── 진영 분석 ──
-    const t = meta.thresholds || {};
-    const composition = {
-      groundShare: totalPower ? groundPower / totalPower : 0,
-      airShare: totalPower ? airPower / totalPower : 0,
-      physicalShare: totalPower ? physicalPower / totalPower : 0,
-      magicShare: totalPower ? magicPower / totalPower : 0
-    };
+    // 다음 스테이지들에 대한 권장 보유 유닛 (앞으로 3스테이지)
+    const upcoming = stages.filter((s) => s.stage > stage.stage).slice(0, 3);
+    const futureScore = {};
+    for (const u of units) futureScore[u.id] = 0;
+    for (const s of upcoming) {
+      for (const u of units) {
+        futureScore[u.id] += unitValueVsStage(u, s, meta, bonusOf(u), enemyById).value;
+      }
+    }
+    const futureRank = units
+      .map((u) => ({ id: u.id, name: u.name, score: futureScore[u.id] }))
+      .sort((a, b) => b.score - a.score);
 
-    const warnings = [];
-    const tips = [];
-
+    // 코칭 노트
     if (totalUnits === 0) {
-      tips.push('유닛을 뽑을 때마다 왼쪽 목록에서 + 를 눌러 카운트하세요. 보유 현황과 추천이 실시간으로 갱신됩니다.');
+      result.tips.push('유닛을 뽑을 때마다 왼쪽에서 + 를 눌러 카운트하세요. 위쪽에서 목표 스테이지를 선택하면 그에 맞는 추천이 나옵니다.');
     } else {
-      if (composition.airShare < (t.lowAirShare ?? 0.15)) {
-        warnings.push('공중 대상 화력이 부족합니다. 공중 보스/유닛 웨이브에 취약할 수 있어요 (대공/궁수/마법 계열 보강 권장).');
+      if (best) {
+        const sizeNames = result.enemyTable.map((e) => (meta.sizes || []).find((s) => s.id === e.size)?.name || e.size);
+        result.tips.push(`이번 스테이지(${stage.name})에는 "${best.name}"이(가) 가장 효율적입니다. 등장: ${[...new Set(sizeNames)].join('/')}.`);
       }
-      if (composition.groundShare < (t.lowGroundShare ?? 0.15)) {
-        warnings.push('지상 대상 화력이 부족합니다. 지상 물량 웨이브에 취약할 수 있어요.');
+      if (result.upgradeSuggestions.length > 0) {
+        const u = result.upgradeSuggestions[0];
+        result.tips.push(`업그레이드는 "${u.name}"(Lv.${u.currentLevel}→${u.currentLevel + 1}, 비용 ${u.nextCost})가 지금 가장 효율적입니다.`);
       }
-      const low = t.lowTypeShare ?? 0.1;
-      if (composition.physicalShare < low) {
-        tips.push('물리 데미지 비중이 매우 낮습니다. 마법 저항 보스 대비 물리 딜러를 일부 확보하면 안정적입니다.');
-      }
-      if (composition.magicShare < low) {
-        tips.push('마법 데미지 비중이 매우 낮습니다. 물리 방어 보스 대비 마법 딜러를 일부 확보하면 안정적입니다.');
-      }
-      if (combineSuggestions.length > 0) {
-        const best = combineSuggestions[0];
-        tips.push(`합성 가능: ${best.fromName} ${best.need}개 → ${best.toName}(${tierOf(meta, best.toTier).name}). 등급을 올리면 화력이 크게 상승합니다.`);
-      }
-      if (upgradeSuggestions.length > 0) {
-        const best = upgradeSuggestions[0];
-        tips.push(`지금 가장 효율적인 업그레이드는 "${best.name}" (Lv.${best.currentLevel}→${best.currentLevel + 1}, 비용 ${best.nextCost}) 입니다.`);
+      if (upcoming.length > 0 && futureRank[0].score > 0) {
+        result.tips.push(`앞으로 ${upcoming.length}스테이지 기준으로는 "${futureRank[0].name}" 보유가 가장 유리합니다. 약한 유닛은 팔아 정비를 고려하세요.`);
+        // 판매 조언: 미래 가치가 0에 가깝고 보유 중인 유닛
+        for (const f of futureRank) {
+          const owned = counts[f.id] || 0;
+          if (owned > 0 && f.score === 0) {
+            result.sellAdvice.push(`${f.name} ×${owned}: 앞 스테이지에서 효율이 없습니다(처치 불가/배율 낮음). 판매 검토.`);
+          }
+        }
       }
     }
 
-    return {
-      totalUnits,
-      totalPower: Math.round(totalPower),
-      byUnit,
-      combineSuggestions,
-      upgradeSuggestions,
-      composition,
-      warnings,
-      tips
-    };
+    return result;
   }
 
-  const api = { analyze, effectiveDps, upgradeCost, unitMatches, tierOf };
+  const api = {
+    analyze, perHit, timeToKill, effDpsVsEnemy, unitValueVsStage,
+    sizeMod, upgradeBonus, upgradeCost
+  };
 
   if (typeof module !== 'undefined' && module.exports) {
     module.exports = api;

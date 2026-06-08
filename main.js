@@ -43,6 +43,8 @@ function createWindow() {
 ipcMain.handle('load-data', () => ({
   units: readJson(path.join(DATA_DIR, 'units.json'), []),
   upgrades: readJson(path.join(DATA_DIR, 'upgrades.json'), []),
+  enemies: readJson(path.join(DATA_DIR, 'enemies.json'), []),
+  stages: readJson(path.join(DATA_DIR, 'stages.json'), []),
   meta: readJson(path.join(DATA_DIR, 'meta.json'), {})
 }));
 

@@ -1,0 +1,34 @@
+[
+  {
+    "id": "slime",   "name": "꼬마 슬라임", "size": "small",
+    "hp": 40,  "armor": 0, "shield": 0,   "shieldArmor": 0, "hpRegen": 0
+  },
+  {
+    "id": "bat",     "name": "동굴 박쥐",   "size": "small",
+    "hp": 60,  "armor": 0, "shield": 0,   "shieldArmor": 0, "hpRegen": 2
+  },
+  {
+    "id": "orc",     "name": "오크 전사",   "size": "medium",
+    "hp": 140, "armor": 1, "shield": 0,   "shieldArmor": 0, "hpRegen": 1
+  },
+  {
+    "id": "shield_knight", "name": "방패 기사", "size": "medium",
+    "hp": 100, "armor": 1, "shield": 80,  "shieldArmor": 1, "hpRegen": 0
+  },
+  {
+    "id": "golem",   "name": "바위 골렘",   "size": "large",
+    "hp": 320, "armor": 3, "shield": 0,   "shieldArmor": 0, "hpRegen": 2
+  },
+  {
+    "id": "behemoth", "name": "베히모스",   "size": "large",
+    "hp": 480, "armor": 4, "shield": 120, "shieldArmor": 2, "hpRegen": 5
+  },
+  {
+    "id": "boss_warlord", "name": "보스: 광기의 군주", "size": "large", "boss": true,
+    "hp": 3000, "armor": 6, "shield": 1000, "shieldArmor": 3, "hpRegen": 25
+  },
+  {
+    "id": "boss_swarm", "name": "보스: 군단 모후", "size": "medium", "boss": true,
+    "hp": 4200, "armor": 3, "shield": 0, "shieldArmor": 0, "hpRegen": 40
+  }
+]
